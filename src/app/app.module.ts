@@ -8,6 +8,7 @@ import { UserModule } from 'src/user/user.module';
   imports: [
     UserModule,
     MongooseModule.forRoot('mongodb://101.43.65.197:27017', {
+      dbName: 'blog',
       user: 'blogUser',
       pass: '123456',
     }),
