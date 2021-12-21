@@ -18,3 +18,22 @@ export class RegisterUserDto {
   password: string;
   email?: string;
 }
+
+export class loginUserDto {
+  readonly email?: string;
+  readonly username?: string;
+  readonly password: string;
+}
+
+export class EditUserDto {
+  readonly nickname: string;
+  readonly email: string;
+  readonly job: string[];
+  readonly introduce: string;
+  readonly token: string;
+}
+
+export class EditUserAvatorDto {
+  readonly avatar: string;
+  readonly token: string;
+}

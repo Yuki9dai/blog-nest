@@ -37,6 +37,7 @@ export class UserService {
     const num = await this.userModel.collection.countDocuments();
     const { username, nickname, password, email } = userInfo;
     const userid = num.toString().padStart(6, '0');
+    console.log('userid', userid);
     return {
       userid,
       username,
@@ -66,6 +67,12 @@ export class UserService {
         );
       } else {
         const userAllInfo = await this.addRegisterInfo(userInfo);
+        const isUserNameExit = await this.userModel.find({
+          username: userInfo.username,
+        });
+        if (isUserNameExit.length > 0) {
+          return new ErrorResult(ErrorCodeEnum.ERROR, '', '用户名重复');
+        }
         const createUser = new this.userModel(userAllInfo);
         await createUser.save();
         return new SuccessResult(
@@ -77,5 +84,17 @@ export class UserService {
     } catch (error) {
       return new ErrorResult(ErrorCodeEnum.ERROR, error, '注册失败');
     }
+  }
+
+  async loginUser(userInfo) {
+    return 'loginInfo';
+  }
+
+  async editUserInfo(userInfo) {
+    return 'editInfo';
+  }
+
+  async editUserAvator(userInfo) {
+    return 'editAvator';
   }
 }

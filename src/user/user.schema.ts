@@ -6,10 +6,13 @@ export type UserDocument = User & Document;
 @Schema()
 export class User extends Document {
   @Prop()
-  userid: number;
+  userid: string;
 
   @Prop()
   username: string;
+
+  @Prop()
+  password: string;
 
   @Prop()
   nickname: string;
@@ -25,6 +28,9 @@ export class User extends Document {
 
   @Prop()
   createTime: string;
+
+  @Prop()
+  email: string;
 
   @Prop()
   token: string;
