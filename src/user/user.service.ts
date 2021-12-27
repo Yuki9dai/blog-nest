@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { UserDocument } from './user.schema';
-import { QueryUserDto, RegisterUserDto } from './user.dto';
+import { QueryUserDto, RegisterUserDto, loginUserDto } from './user.dto';
 import SuccessResult from '../common/successResult';
 import ErrorResult from '../common/errorResult';
 import ErrorCodeEnum from '../common/errorCodeEnum';
 import { InjectModel } from '@nestjs/mongoose';
+import { makeSalt } from '../common/passwordHmac';
 
 @Injectable()
 export class UserService {
@@ -37,11 +38,10 @@ export class UserService {
     const num = await this.userModel.collection.countDocuments();
     const { username, nickname, password, email } = userInfo;
     const userid = num.toString().padStart(6, '0');
-    console.log('userid', userid);
     return {
       userid,
       username,
-      password,
+      password: makeSalt(password),
       nickname: nickname || '',
       email: email || '',
       job: [],
@@ -66,7 +66,10 @@ export class UserService {
           '注册失败',
         );
       } else {
-        const userAllInfo = await this.addRegisterInfo(userInfo);
+        const userAllInfo = await this.addRegisterInfo({
+          ...userInfo,
+          password: makeSalt(userInfo.password),
+        });
         const isUserNameExit = await this.userModel.find({
           username: userInfo.username,
         });
@@ -86,8 +89,21 @@ export class UserService {
     }
   }
 
-  async loginUser(userInfo) {
-    return 'loginInfo';
+  async loginUser(userInfo: loginUserDto) {
+    const reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+    let result = null;
+    if (reg.test(userInfo.username)) {
+      result = await this.userModel.find({ email: userInfo.username });
+    } else {
+      result = await this.userModel.find({ username: userInfo.username });
+    }
+    if (result && result.password === userInfo.password.trim()) {
+      return new SuccessResult(
+        ErrorCodeEnum.SUCCESS,
+        { token: '111' },
+        '登陆成功',
+      );
+    }
   }
 
   async editUserInfo(userInfo) {

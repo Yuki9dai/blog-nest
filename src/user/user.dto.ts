@@ -20,8 +20,7 @@ export class RegisterUserDto {
 }
 
 export class loginUserDto {
-  readonly email?: string;
-  readonly username?: string;
+  readonly username: string;
   readonly password: string;
 }
 
