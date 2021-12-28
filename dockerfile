@@ -10,15 +10,15 @@ COPY . /var/blog-nest
 # 执行镜像的工作目录
 WORKDIR /var/blog-nest
 
+# 打包依赖安装
+RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
+RUN cnpm install
+RUN cnpm install pm2 -g
+
 # 配置系统变量，指定端口
 ENV HOST 0.0.0.0
 ENV PORT 3000
-
-# 开放端口
 EXPOSE 3000
 
-# 打包依赖安装
-CMD ["npm","install"]
-
-# 容器启动命令
-CMD ["node","dist/main.js"]
+# 启动服务
+CMD [ "pm2-docker", "start", "dist/main.js" ]
