@@ -17,5 +17,8 @@ ENV PORT 3000
 # 开放端口
 EXPOSE 3000
 
+# 打包依赖安装
+CMD ["npm","install"]
+
 # 容器启动命令
 CMD ["node","dist/main.js"]
